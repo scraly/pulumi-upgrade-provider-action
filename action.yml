@@ -75,6 +75,10 @@ inputs:
       If true, the provider will release a patch version with the resulting upgrade PR.
     required: false
     default: false
+  gradle-version:
+    description: The version of gradle to use
+    required: false
+    default: '8.8'
 runs:
   using: "composite"
   steps:
@@ -105,11 +109,9 @@ runs:
     run: go install github.com/pulumi/upgrade-provider@main
     shell: bash
   - name: Setup Gradle
-    # Taken from ci-mgmt: https://github.com/pulumi/ci-mgmt/blob/cbb506c8323134f33314a4877d8cd305b127d6da/provider-ci/internal/pkg/action-versions.yml#L34
-    uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1 # v3.5.0
+    uses: gradle/actions/setup-gradle@v4
     with:
-      gradle-version: "7.6"
-
+      gradle-version: ${{ inputs.gradle-version }}
   - name: "Set up git identity: name"
     run: git config --global user.name '${{ inputs.username }}'
     shell: bash
